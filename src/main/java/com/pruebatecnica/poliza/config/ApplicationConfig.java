@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -15,6 +16,11 @@ public class ApplicationConfig {
     ModelMapper modelMapper() {
 		return new ModelMapper();
 	}
+
+    @Bean
+    RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 
     @Bean
     ServletRegistrationBean<JakartaWebServlet> h2ServletRegistration() {

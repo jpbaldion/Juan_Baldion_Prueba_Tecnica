@@ -9,9 +9,12 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.pruebatecnica.poliza.entities.PolizaColectivaEntity;
@@ -35,8 +38,17 @@ public class PolizaService {
     @Autowired
     private RiesgoRepository riesgoRepository;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @Value("${poliza.ipc:0.05}")
     private BigDecimal ipc;
+
+    @Value("${core-mock.url}")
+    private String coreMockUrl;
+
+    @Value("${core-mock.api-key}")
+    private String coreMockApiKey;
 
     public List<PolizaEntity> listarPolizas(String tipo, EstadoPoliza estado) {
         List<PolizaEntity> polizas = polizaRepository.findAll();
@@ -71,14 +83,18 @@ public class PolizaService {
         poliza.setValorCanonMensual(redondear(poliza.getValorCanonMensual() * factorIncremento));
         poliza.setValorPrima(redondear(poliza.getValorPrima() * factorIncremento));
         poliza.setEstado(EstadoPoliza.RENOVADA);
-        return polizaRepository.save(poliza);
+        PolizaEntity resultado = polizaRepository.save(poliza);
+        notificarAlCoreMock("RENOVACION", polizaId);
+        return resultado;
     }
 
     public PolizaEntity cancelarPoliza(String polizaId) {
         PolizaEntity poliza = obtenerPoliza(polizaId);
         cancelarRiesgos(poliza);
         poliza.setEstado(EstadoPoliza.CANCELADA);
-        return polizaRepository.save(poliza);
+        PolizaEntity resultado = polizaRepository.save(poliza);
+        notificarAlCoreMock("CANCELACION", polizaId);
+        return resultado;
     }
 
     public RiesgoEntity agregarRiesgo(String polizaId, RiesgoEntity riesgo) {
@@ -94,6 +110,7 @@ public class PolizaService {
             }
             riesgos.add(riesgo);
             polizaRepository.save(polizaColectiva);
+            notificarAlCoreMock("AGREGAR_RIESGO", polizaId);
             return riesgo;
         }
 
@@ -141,5 +158,23 @@ public class PolizaService {
 
     private float redondear(float valor) {
         return BigDecimal.valueOf(valor).setScale(2, RoundingMode.HALF_UP).floatValue();
+    }
+
+    private void notificarAlCoreMock(String evento, String polizaId) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("x-api-key", coreMockApiKey);
+            headers.set("Content-Type", "application/json");
+
+            java.util.Map<String, Object> payload = new java.util.HashMap<>();
+            payload.put("evento", evento);
+            payload.put("polizaId", polizaId);
+
+            HttpEntity<java.util.Map<String, Object>> request = new HttpEntity<>(payload, headers);
+            restTemplate.postForObject(coreMockUrl, request, Object.class);
+            log.info("Notification sent to Core Mock: evento={}, polizaId={}", evento, polizaId);
+        } catch (Exception e) {
+            log.warn("Failed to notify Core Mock: evento={}, polizaId={}, error={}", evento, polizaId, e.getMessage());
+        }
     }
 }
