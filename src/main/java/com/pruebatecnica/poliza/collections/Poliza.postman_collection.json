@@ -1,0 +1,114 @@
+{
+  "info": {
+    "_postman_id": "d936660c-76c2-4db5-9e9e-a2b5cbbaa5a5",
+    "name": "Poliza",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "38823378"
+  },
+  "item": [
+    {
+      "name": "Get Polizas",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "Get Riesgos de una Poliza por su ID",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "Renovar Poliza",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/polizas/p-001/renovar",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "polizas",
+            "p-001",
+            "renovar"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Añadir nuevo riesgo a una poliza",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"identificadorImueble\": \"CASA-232\",\r\n    \"valorCanonRiesgo\": 127000\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/polizas/p-002/riesgos",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "polizas",
+            "p-002",
+            "riesgos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cancelar poliza",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "Core-Mock",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "123456",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"evento\": \"ACTUALIZACION\",\r\n    \"polizaId\": \"p-002\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/core-mock/evento",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "core-mock",
+            "evento"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
