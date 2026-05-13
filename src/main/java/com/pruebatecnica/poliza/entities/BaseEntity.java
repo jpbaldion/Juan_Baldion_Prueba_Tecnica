@@ -1,8 +1,10 @@
 package com.pruebatecnica.poliza.entities;
 
-import jakarta.annotation.Generated;
+import java.util.UUID;
+
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
 import lombok.Data;
 import uk.co.jemos.podam.common.PodamExclude;
 
@@ -11,6 +13,12 @@ import uk.co.jemos.podam.common.PodamExclude;
 public abstract class BaseEntity {
     @PodamExclude
     @Id
-    @Generated(value = "uuid")
     private String id;
+
+    @PrePersist
+    void assignIdIfMissing() {
+        if (id == null || id.isBlank()) {
+            id = UUID.randomUUID().toString();
+        }
+    }
 }
