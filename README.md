@@ -67,7 +67,7 @@ src/main/java/com/pruebatecnica/poliza/
 
 ```bash
 git clone https://github.com/jpbaldion/Juan_Baldion_Prueba_Tecnica.git
-cd poliza
+cd Juan_Baldion_Prueba_Tecnica
 ```
 
 ### 2. Compilar el Proyecto
