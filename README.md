@@ -171,7 +171,72 @@ core-mock.api-key=123456
   core-mock.api-key=<API_KEY_SEGURA>
   ```
 
-## 🔒 Seguridad
+## � Datos de Prueba Precargados
+
+Al iniciar la aplicación, se cargan automáticamente datos de prueba en la base de datos H2. Estos datos permite probar todos los endpoints sin necesidad de crear registros manualmente.
+
+### Riesgos Precargados
+
+| ID | Identificador | Valor Canon | Estado | Póliza |
+|----|----|-------|--------|--------|
+| r-001 | APT-101 | $850,000 | ACTIVO | Póliza Individual POL-001 |
+| r-002 | CASA-202 | $1,250,000 | CANCELADO | Póliza Colectiva POL-002 |
+| r-003 | BODEGA-303 | $980,000 | ACTIVO | Póliza Colectiva POL-002 |
+| r-004 | BODEGA-302 | $1,080,000 | ACTIVO | Sin asignar |
+
+### Pólizas Precargadas
+
+#### Póliza Individual
+- **ID**: `p-001`
+- **Número**: `POL-001`
+- **Vigencia**: 1 año (2026-05-01 a 2027-05-01)
+- **Estado**: ACTIVA
+- **Canon Mensual**: $120,000
+- **Prima Total**: $1,440,000
+- **Riesgo Asociado**: r-001 (APT-101)
+
+#### Póliza Colectiva
+- **ID**: `p-002`
+- **Número**: `POL-002`
+- **Vigencia**: 1 año (2026-05-10 a 2027-05-10)
+- **Estado**: PENDIENTE
+- **Canon Mensual**: $180,000
+- **Prima Total**: $2,160,000
+- **Riesgos Asociados**: r-002 (CASA-202), r-003 (BODEGA-303)
+
+### Cómo Usar los Datos de Prueba
+
+1. **Listar todas las pólizas y ver los datos precargados**:
+   ```bash
+   curl http://localhost:8080/api/polizas
+   ```
+
+2. **Filtrar pólizas individuales**:
+   ```bash
+   curl "http://localhost:8080/api/polizas?tipo=INDIVIDUAL"
+   ```
+
+3. **Filtrar pólizas colectivas**:
+   ```bash
+   curl "http://localhost:8080/api/polizas?tipo=COLECTIVA"
+   ```
+
+4. **Consultar riesgos de la póliza colectiva**:
+   ```bash
+   curl http://localhost:8080/api/polizas/p-002/riesgos
+   ```
+
+5. **Renovar la póliza individual**:
+   ```bash
+   curl -X POST http://localhost:8080/api/polizas/p-001/renovar
+   ```
+
+6. **Cancelar la póliza colectiva** (cancelará todos sus riesgos):
+   ```bash
+   curl -X POST http://localhost:8080/api/polizas/p-002/cancelar
+   ```
+
+## �🔒 Seguridad
 
 - El endpoint `/core-mock/evento` requiere el header `x-api-key: 123456`
 - Sin este header, la petición es rechazada con código 401 (Unauthorized)
