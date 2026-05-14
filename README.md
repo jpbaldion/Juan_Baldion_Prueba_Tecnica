@@ -238,7 +238,7 @@ server.port=8081
 
 ### H2 Console no accesible
 - Verificar que `spring.h2.console.enabled=true` en properties
-- Acceder a [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
+- Acceder a [http://localhost:8080/api/h2-console](http://localhost:8080/api/h2-console)
 
 ## 📧 Autor
 
