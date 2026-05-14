@@ -91,7 +91,7 @@ java -jar target/poliza-0.0.1-SNAPSHOT.jar
 ### 4. Acceder a la Aplicación
 
 - **API REST**: [http://localhost:8080/api](http://localhost:8080/api)
-- **Consola H2**: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
+- **Consola H2**: [http://localhost:8080/api/h2-console](http://localhost:8080/api/h2-console)
   - JDBC URL: `jdbc:h2:mem:poliza`
   - Username: `sa`
   - Password: `password`
